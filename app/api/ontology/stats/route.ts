@@ -53,8 +53,8 @@ export async function GET() {
     let neo4jStats = {
       nodeCount: 0,
       relationshipCount: 0,
-      labels: [],
-      relationshipTypes: [],
+      labels: [] as string[],
+      relationshipTypes: [] as string[],
     };
 
     try {

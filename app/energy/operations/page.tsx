@@ -160,10 +160,8 @@ export default function EnergyOperationsPage() {
             value={stats.totalPlants}
             unit="개"
             change={stats.operationalPlants}
-            trend="up"
             color="thesis"
             icon={Zap}
-            description={`운영 중 ${stats.operationalPlants}개소`}
           />
           <NeonMetricCard
             label="총 설비용량"
@@ -171,27 +169,22 @@ export default function EnergyOperationsPage() {
             unit="MW"
             color="synthesis"
             icon={Battery}
-            description="전체 발전 용량"
           />
           <NeonMetricCard
             label="현재 발전량"
             value={(stats.currentProduction / 1000).toFixed(1)}
             unit="MWh"
             change={stats.avgEfficiency}
-            trend="up"
             color="amber"
             icon={Activity}
-            description={`평균 효율 ${stats.avgEfficiency.toFixed(1)}%`}
           />
           <NeonMetricCard
             label="금일 매출"
             value={(stats.todayRevenue / 1000000).toFixed(1)}
             unit="백만원"
             change={15.2}
-            trend="up"
             color="synthesis"
             icon={DollarSign}
-            description={`금일 생산 ${(stats.todayProduction / 1000).toFixed(1)}MWh`}
           />
         </div>
 

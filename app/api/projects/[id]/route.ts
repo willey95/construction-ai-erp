@@ -44,10 +44,14 @@ export async function GET(
       })),
       cashFlows: project.cashFlows?.map(cf => ({
         ...cf,
-        inflow: cf.inflow ? Number(cf.inflow) : 0,
-        outflow: cf.outflow ? Number(cf.outflow) : 0,
+        invoiceAmount: cf.invoiceAmount ? Number(cf.invoiceAmount) : 0,
+        receivedAmount: cf.receivedAmount ? Number(cf.receivedAmount) : 0,
+        retentionReceived: cf.retentionReceived ? Number(cf.retentionReceived) : 0,
+        subcontractPayment: cf.subcontractPayment ? Number(cf.subcontractPayment) : 0,
+        materialPayment: cf.materialPayment ? Number(cf.materialPayment) : 0,
+        otherPayment: cf.otherPayment ? Number(cf.otherPayment) : 0,
         netCashFlow: cf.netCashFlow ? Number(cf.netCashFlow) : 0,
-        cumulativeCashFlow: cf.cumulativeCashFlow ? Number(cf.cumulativeCashFlow) : 0,
+        cumulativeCash: cf.cumulativeCash ? Number(cf.cumulativeCash) : 0,
       })),
     };
 

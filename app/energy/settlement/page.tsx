@@ -190,7 +190,7 @@ export default function EnergySettlementPage() {
               change={-3.2}
               trend="down"
               icon={TrendingDown}
-              color="warning"
+              color="pneuma"
               description="운영 및 유지보수 비용"
             />
           </ZenCard>
@@ -236,7 +236,7 @@ export default function EnergySettlementPage() {
                     outerRadius={100}
                     fill="#8884d8"
                     dataKey="value"
-                    label={(entry) => `${entry.name}: ${(entry.value / 100).toFixed(1)}억`}
+                    label={(entry: any) => `${entry.name}: ${(entry.value / 100).toFixed(1)}억`}
                   >
                     {revenueBreakdown.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />

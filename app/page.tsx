@@ -37,6 +37,9 @@ export default function HomePage() {
     // 초기 데이터 로드 및 자동 연결
     const initialProjects = sampleProjects.map(p => ({
       ...p,
+      startDate: p.startDate.toISOString(),
+      endDate: p.endDate.toISOString(),
+      contractDate: p.contractDate.toISOString(),
       financialMetrics: {
         npv: Math.random() * 1000 + 500,
         irr: Math.random() * 10 + 8,

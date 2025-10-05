@@ -132,7 +132,8 @@ export class ReportGeneratorAgent extends AgentBase {
       return acc;
     }, {} as Record<string, number>);
 
-    const mostActive = Object.entries(agentCounts).sort((a, b) => b[1] - a[1])[0];
+    const sorted = (Object.entries(agentCounts) as [string, number][]).sort((a, b) => b[1] - a[1]);
+    const mostActive = sorted.length > 0 ? sorted[0] : null;
     if (mostActive) {
       insights.push({
         type: 'info',
@@ -152,7 +153,7 @@ export class ReportGeneratorAgent extends AgentBase {
 
     const performance: Record<string, any> = {};
 
-    for (const [agentName, agentLogs] of Object.entries(agentGroups)) {
+    for (const [agentName, agentLogs] of Object.entries(agentGroups) as [string, any[]][]) {
       const successCount = agentLogs.filter(l => l.status === 'SUCCESS').length;
       const totalRuns = agentLogs.length;
       const avgDuration = agentLogs

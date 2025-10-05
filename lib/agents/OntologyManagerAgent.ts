@@ -80,8 +80,10 @@ export class OntologyManagerAgent extends AgentBase {
 
     for (const dataset of datasets) {
       try {
-        await this.log('INFO', `Starting scheduled ETL for dataset: ${dataset.name}`, {
-          datasetId: dataset.id,
+        await this.log({
+          action: `Starting scheduled ETL for dataset: ${dataset.name}`,
+          status: 'RUNNING',
+          input: { datasetId: dataset.id },
         });
 
         const result = await runETL({
@@ -90,14 +92,18 @@ export class OntologyManagerAgent extends AgentBase {
           batchSize: 100,
         });
 
-        await this.log('SUCCESS', `ETL completed for dataset: ${dataset.name}`, {
-          result,
+        await this.log({
+          action: `ETL completed for dataset: ${dataset.name}`,
+          status: 'SUCCESS',
+          output: result,
         });
 
         executedCount++;
       } catch (error: any) {
-        await this.log('ERROR', `ETL failed for dataset: ${dataset.name}`, {
-          error: error.message,
+        await this.log({
+          action: `ETL failed for dataset: ${dataset.name}`,
+          status: 'FAILED',
+          output: { error: error.message },
         });
       }
     }
@@ -131,9 +137,10 @@ export class OntologyManagerAgent extends AgentBase {
           processedIds.add(entities[j].id);
           mergedCount++;
 
-          await this.log('INFO', 'Merged duplicate entities', {
-            from: entities[j].name,
-            to: entities[i].name,
+          await this.log({
+            action: 'Merged duplicate entities',
+            status: 'SUCCESS',
+            output: { from: entities[j].name, to: entities[i].name },
           });
         }
       }
@@ -147,8 +154,8 @@ export class OntologyManagerAgent extends AgentBase {
     const set1 = new Set(str1.toLowerCase().split(''));
     const set2 = new Set(str2.toLowerCase().split(''));
 
-    const intersection = new Set([...set1].filter((x) => set2.has(x)));
-    const union = new Set([...set1, ...set2]);
+    const intersection = new Set(Array.from(set1).filter((x) => set2.has(x)));
+    const union = new Set([...Array.from(set1), ...Array.from(set2)]);
 
     return intersection.size / union.size;
   }
@@ -202,8 +209,10 @@ export class OntologyManagerAgent extends AgentBase {
       // 순환 관계 체크
       const isCircular = relation.fromEntityId === relation.toEntityId;
       if (isCircular) {
-        await this.log('WARNING', 'Circular relation detected', {
-          relationId: relation.id,
+        await this.log({
+          action: 'Circular relation detected',
+          status: 'RUNNING',
+          output: { relationId: relation.id },
         });
         continue;
       }
@@ -224,8 +233,10 @@ export class OntologyManagerAgent extends AgentBase {
           where: { id: relation.id },
         });
 
-        await this.log('INFO', 'Duplicate relation removed', {
-          relationId: relation.id,
+        await this.log({
+          action: 'Duplicate relation removed',
+          status: 'SUCCESS',
+          output: { relationId: relation.id },
         });
         continue;
       }
@@ -252,7 +263,7 @@ export class OntologyManagerAgent extends AgentBase {
         projectType: true,
         status: true,
         location: true,
-        clientName: true,
+        client: true,
       },
     });
 
@@ -301,10 +312,10 @@ export class OntologyManagerAgent extends AgentBase {
       }
 
       // 조직 엔티티 생성 (발주처)
-      if (project.clientName) {
+      if (project.client) {
         const clientEntity = await prisma.ontologyEntity.findFirst({
           where: {
-            name: project.clientName,
+            name: project.client,
             entityType: 'ORGANIZATION',
           },
         });
@@ -313,8 +324,8 @@ export class OntologyManagerAgent extends AgentBase {
           const newClient = await prisma.ontologyEntity.create({
             data: {
               entityType: 'ORGANIZATION',
-              name: project.clientName,
-              label: project.clientName,
+              name: project.client,
+              label: project.client,
               description: 'Client organization',
               properties: {},
               source: 'legacy_db',
@@ -363,10 +374,10 @@ export class OntologyManagerAgent extends AgentBase {
     const inSync = Math.abs(postgresqlCount - neo4jCount) < 10; // 10개 이내 차이는 허용
 
     if (!inSync) {
-      await this.log('WARNING', 'Ontology databases out of sync', {
-        postgresqlCount,
-        neo4jCount,
-        diff: postgresqlCount - neo4jCount,
+      await this.log({
+        action: 'Ontology databases out of sync',
+        status: 'RUNNING',
+        output: { postgresqlCount, neo4jCount, diff: postgresqlCount - neo4jCount },
       });
 
       // 자동 동기화 시도

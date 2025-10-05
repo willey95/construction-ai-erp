@@ -12,8 +12,12 @@
  */
 
 import { PrismaClient } from '@prisma/client';
-import { BaseAgent } from './BaseAgent';
-import type { AgentExecutionContext } from './types';
+import { AgentBase } from './AgentBase';
+
+interface AgentExecutionContext {
+  projectId?: string;
+  [key: string]: any;
+}
 
 const prisma = new PrismaClient();
 
@@ -57,9 +61,14 @@ interface RiskNotification {
   actionRequired: boolean;
 }
 
-export class ProjectRiskAgent extends BaseAgent {
+export class ProjectRiskAgent extends AgentBase {
   constructor() {
-    super('ProjectRiskAgent', 'PROJECT_RISK_MONITOR');
+    super({ name: 'ProjectRiskAgent', type: 'PROJECT_RISK_MONITOR' as any });
+  }
+
+  protected async run(): Promise<any> {
+    // 전체 프로젝트 리스크 스캔
+    return await this.scanAllProjects();
   }
 
   async execute(context: AgentExecutionContext): Promise<any> {
@@ -70,7 +79,7 @@ export class ProjectRiskAgent extends BaseAgent {
       return await this.analyzeProjectRisk(projectId);
     } else {
       // 전체 프로젝트 리스크 스캔
-      return await this.scanAllProjects();
+      return await this.run();
     }
   }
 
@@ -371,13 +380,13 @@ export class ProjectRiskAgent extends BaseAgent {
     projectId: string,
     metrics: RiskMetrics
   ): Promise<void> {
-    const severity = metrics.overallRiskScore >= 85 ? 'CRITICAL' :
+    const severity = (metrics.overallRiskScore >= 85 ? 'CRITICAL' :
                     metrics.overallRiskScore >= 70 ? 'DANGER' :
-                    metrics.overallRiskScore >= 50 ? 'WARNING' : 'INFO';
+                    metrics.overallRiskScore >= 50 ? 'WARNING' : 'INFO') as 'CRITICAL' | 'DANGER' | 'WARNING' | 'INFO';
 
     const notification = {
       projectId,
-      severity,
+      severity: severity as any,
       category: '종합 리스크',
       title: `프로젝트 리스크 점수: ${metrics.overallRiskScore}점`,
       message: metrics.criticalRisks.length > 0

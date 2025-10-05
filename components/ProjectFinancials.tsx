@@ -80,11 +80,10 @@ export function ProjectFinancials({ project }: ProjectFinancialsProps) {
     XLSX.utils.book_append_sheet(wb, ws1, 'PL_CF_Summary');
     XLSX.utils.book_append_sheet(wb, ws2, 'Monthly_CashFlow');
 
-    // UTF-8 BOM을 추가하여 Excel에서 한글이 올바르게 표시되도록 함
+    // Excel 파일 저장 (xlsx 형식은 기본적으로 UTF-8 지원)
     XLSX.writeFile(wb, `${project.projectCode}_Financial_Statement.xlsx`, {
       bookType: 'xlsx',
       type: 'binary',
-      codepage: 65001, // UTF-8
     });
   };
 

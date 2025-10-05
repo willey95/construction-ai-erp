@@ -162,10 +162,14 @@ export class ProjectOntologyGenerator {
             name: `${cf.month} 현금흐름`,
             properties: {
               month: cf.month,
-              inflow: Number(cf.inflow),
-              outflow: Number(cf.outflow),
+              invoiceAmount: Number(cf.invoiceAmount),
+              receivedAmount: Number(cf.receivedAmount),
+              retentionReceived: Number(cf.retentionReceived),
+              subcontractPayment: Number(cf.subcontractPayment),
+              materialPayment: Number(cf.materialPayment),
+              otherPayment: Number(cf.otherPayment),
               netCashFlow: Number(cf.netCashFlow),
-              cumulativeCashFlow: Number(cf.cumulativeCashFlow),
+              cumulativeCash: Number(cf.cumulativeCash),
             },
             category: 'Financial',
           };

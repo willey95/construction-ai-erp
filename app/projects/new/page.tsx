@@ -382,14 +382,12 @@ export default function NewProjectPage() {
                 <ZenButton
                   variant="ghost"
                   onClick={() => router.push('/projects')}
-                  type="button"
                 >
                   취소
                 </ZenButton>
                 <ZenButton
                   variant="primary"
                   onClick={() => setActiveTab('forecast')}
-                  type="button"
                   icon={TrendingUp}
                 >
                   재무전망으로
@@ -650,13 +648,11 @@ export default function NewProjectPage() {
                 <ZenButton
                   variant="ghost"
                   onClick={() => setActiveTab('basic')}
-                  type="button"
                 >
                   이전
                 </ZenButton>
                 <ZenButton
                   variant="primary"
-                  type="submit"
                   disabled={loading}
                   icon={Save}
                 >

@@ -1,4 +1,4 @@
-import cron from 'node-cron';
+import * as cron from 'node-cron';
 import { insightsCrawler } from './InsightsCrawler';
 
 /**
@@ -6,7 +6,7 @@ import { insightsCrawler } from './InsightsCrawler';
  * 5분마다 자동으로 뉴스를 크롤링하고 온톨로지에 연결
  */
 export class InsightsScheduler {
-  private task: cron.ScheduledTask | null = null;
+  private task: ReturnType<typeof cron.schedule> | null = null;
   private isRunning = false;
   private lastRun: Date | null = null;
   private runCount = 0;

@@ -152,7 +152,7 @@ export class DataConnectionNetwork {
           type: nodeType as any,
           metadata: {
             name: entity.name,
-            description: entity.description,
+            description: entity.description ?? undefined,
             category: entity.entityType,
           },
         });
@@ -163,7 +163,7 @@ export class DataConnectionNetwork {
             from: `entity-${entity.id}`,
             to: `entity-${relation.toEntity.id}`,
             type: 'ontology_relation',
-            strength: relation.confidence || 0.7,
+            strength: relation.confidence ? Number(relation.confidence) : 0.7,
             label: relation.relationType,
             metadata: {
               relationType: relation.relationType,
@@ -197,7 +197,7 @@ export class DataConnectionNetwork {
           type: 'insight',
           metadata: {
             name: insight.name,
-            description: insight.description,
+            description: insight.description ?? undefined,
             category: (insight.properties as any)?.category,
           },
         });
@@ -208,7 +208,7 @@ export class DataConnectionNetwork {
             from: `insight-${insight.id}`,
             to: `entity-${relation.toEntity.id}`,
             type: 'insight_relation',
-            strength: relation.confidence || 0.6,
+            strength: relation.confidence ? Number(relation.confidence) : 0.6,
             label: '영향',
             metadata: {
               relationType: relation.relationType,
@@ -309,7 +309,7 @@ export class DataConnectionNetwork {
     // 연결 강도 계산 (관계 수와 신뢰도 기반)
     const avgConfidence =
       [...projectEntity.outgoingRelations, ...projectEntity.incomingRelations].reduce(
-        (sum, rel) => sum + (rel.confidence || 0.5),
+        (sum, rel) => sum + (rel.confidence ? Number(rel.confidence) : 0.5),
         0
       ) / Math.max(directConnections, 1);
 
