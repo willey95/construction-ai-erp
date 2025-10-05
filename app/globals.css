@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 존재론적 색상 시스템 */
+  --void: #0a0a0a;
+  --existence: #1a1a1a;
+  --essence: #2a2a2a;
+  --phenomenon: #3a3a3a;
+  --logos: #e8e8e8;
+  --pneuma: #c0c0c0;
+  --nous: #909090;
+  --telos: #6b7280;
+
+  /* 변증법적 강조색 */
+  --thesis: #00d9ff;
+  --antithesis: #ff4757;
+  --synthesis: #00b8d4;
+
+  /* 목적론적 색상 */
+  --amber: #ffb84d;
+
+  /* 피타고라스 간격 시스템 */
+  --space-void: 0px;
+  --space-atom: 2px;
+  --space-monad: 4px;
+  --space-dyad: 8px;
+  --space-triad: 12px;
+  --space-tetrad: 16px;
+  --space-pentad: 24px;
+  --space-hexad: 32px;
+  --space-heptad: 48px;
+  --space-ogdoad: 64px;
+  --space-ennead: 96px;
+
+  /* 황금비 타이포그래피 */
+  --font-infinitesimal: 10px;
+  --font-minimal: 11px;
+  --font-base: 13px;
+  --font-elevated: 15px;
+  --font-transcendent: 21px;
+  --font-absolute: 34px;
+
+  /* 기본 설정 */
+  --background: var(--void);
+  --foreground: var(--logos);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: var(--font-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* 존재론적 클래스 */
+@layer components {
+  .phenomenal {
+    @apply bg-essence border border-essence rounded-lg;
+  }
+
+  .essence-hover:hover {
+    @apply border-pneuma;
+  }
+
+  .pneuma-hover:hover {
+    @apply text-pneuma;
+  }
+}
+
+/* 애니메이션 유틸리티 */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .numeric-refined {
+    font-variant-numeric: tabular-nums lining-nums;
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+  }
+
+  .text-crisp {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+}
+
+/* 커스텀 애니메이션 */
+@keyframes micro-rise {
+  from { transform: translateY(0); }
+  to { transform: translateY(-1px); }
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+@keyframes microscopic-shift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(0.5px); }
+}
+
+/* 스크롤바 스타일 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--void);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--essence);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--phenomenon);
+}
+
+/* 선택 영역 스타일 */
+::selection {
+  background-color: rgba(0, 217, 255, 0.2);
+  color: var(--logos);
+}
