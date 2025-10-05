@@ -287,7 +287,7 @@ export class ProjectOntologyGenerator {
         generatedAt: new Date(),
         nodeCount: nodes.length,
         relationCount: relations.length,
-        categories: [...new Set(categories)],
+        categories: Array.from(new Set(categories)),
       },
     };
 
@@ -309,7 +309,7 @@ export class ProjectOntologyGenerator {
       const existing = await prisma.ontologyEntity.findFirst({
         where: {
           name: node.name,
-          entityType: node.entityType,
+          entityType: node.entityType as any,
         },
       });
 
@@ -327,7 +327,7 @@ export class ProjectOntologyGenerator {
         // Create new entity
         const created = await prisma.ontologyEntity.create({
           data: {
-            entityType: node.entityType,
+            entityType: node.entityType as any,
             name: node.name,
             label: node.name,
             description: `${node.category} - ${node.name}`,
@@ -352,7 +352,7 @@ export class ProjectOntologyGenerator {
           where: {
             fromEntityId,
             toEntityId,
-            relationType: rel.relationType,
+            relationType: rel.relationType as any,
           },
         });
 
@@ -361,7 +361,7 @@ export class ProjectOntologyGenerator {
             data: {
               fromEntityId,
               toEntityId,
-              relationType: rel.relationType,
+              relationType: rel.relationType as any,
               properties: rel.properties || {},
               confidence: 1.0,
               verified: true,
@@ -454,7 +454,7 @@ export class ProjectOntologyGenerator {
         generatedAt: new Date(),
         nodeCount: nodes.length,
         relationCount: relations.length,
-        categories: [...new Set(nodes.map(n => n.category))],
+        categories: Array.from(new Set(nodes.map(n => n.category))),
       },
     };
   }
