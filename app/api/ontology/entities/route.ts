@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
         name: entity.name,
         label: entity.label,
         description: entity.description,
-        ...entity.properties,
+        ...(entity.properties as Record<string, any>),
       });
     } catch (error) {
       console.error('Failed to create entity in Neo4j:', error);
@@ -111,7 +111,7 @@ export async function PUT(request: NextRequest) {
         name: entity.name,
         label: entity.label,
         description: entity.description,
-        ...entity.properties,
+        ...(entity.properties as Record<string, any>),
       });
     } catch (error) {
       console.error('Failed to update entity in Neo4j:', error);

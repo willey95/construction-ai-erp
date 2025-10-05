@@ -242,7 +242,7 @@ export class ETLPipeline {
         name: entity.name,
         label: entity.label,
         description: entity.description,
-        ...entity.properties,
+        ...(entity.properties as Record<string, any>),
       });
     }
 
