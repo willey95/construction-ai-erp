@@ -33,11 +33,9 @@ export default function EnergyPlantsPage() {
   const [plants, setPlants] = useState<PowerPlant[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState({
-    type: 'ALL',
-    region: 'ALL',
-    status: 'ALL',
-  });
+  const [filterType, setFilterType] = useState('ALL');
+  const [filterRegion, setFilterRegion] = useState('ALL');
+  const [filterStatus, setFilterStatus] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -75,15 +73,15 @@ export default function EnergyPlantsPage() {
     if (!Array.isArray(plants)) return [];
 
     return plants.filter(plant => {
-      const typeMatch = filter.type === 'ALL' || plant.plantType === filter.type;
-      const regionMatch = filter.region === 'ALL' || plant.region === filter.region;
-      const statusMatch = filter.status === 'ALL' || plant.status === filter.status;
+      const typeMatch = filterType === 'ALL' || plant.plantType === filterType;
+      const regionMatch = filterRegion === 'ALL' || plant.region === filterRegion;
+      const statusMatch = filterStatus === 'ALL' || plant.status === filterStatus;
       const searchMatch = searchTerm === '' ||
         plant.plantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         plant.plantCode.toLowerCase().includes(searchTerm.toLowerCase());
       return typeMatch && regionMatch && statusMatch && searchMatch;
     });
-  }, [plants, filter, searchTerm]);
+  }, [plants, filterType, filterRegion, filterStatus, searchTerm]);
 
   const uniqueRegions = useMemo(() => {
     if (!Array.isArray(plants)) return [];
@@ -207,8 +205,8 @@ export default function EnergyPlantsPage() {
               {/* Type Filter */}
               <div>
                 <select
-                  value={filter.type}
-                  onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value)}
                   className="w-full px-3 py-2 bg-phenomenon/30 border border-essence/20 rounded-lg text-sm text-logos"
                 >
                   <option value="ALL">모든 유형</option>
@@ -221,8 +219,8 @@ export default function EnergyPlantsPage() {
               {/* Region Filter */}
               <div>
                 <select
-                  value={filter.region}
-                  onChange={(e) => setFilter({ ...filter, region: e.target.value })}
+                  value={filterRegion}
+                  onChange={(e) => setFilterRegion(e.target.value)}
                   className="w-full px-3 py-2 bg-phenomenon/30 border border-essence/20 rounded-lg text-sm text-logos"
                 >
                   <option value="ALL">모든 지역</option>
@@ -235,8 +233,8 @@ export default function EnergyPlantsPage() {
               {/* Status Filter */}
               <div>
                 <select
-                  value={filter.status}
-                  onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
                   className="w-full px-3 py-2 bg-phenomenon/30 border border-essence/20 rounded-lg text-sm text-logos"
                 >
                   <option value="ALL">모든 상태</option>
