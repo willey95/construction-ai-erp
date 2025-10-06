@@ -512,7 +512,7 @@ async function main() {
         maintenanceCost,
         totalCost,
         netProfit: totalRevenue - totalCost,
-        status: month === 0 ? 'PROCESSING' : 'COMPLETED',
+        status: (month === 0 ? 'PROCESSING' : 'COMPLETED') as any,
         settledAt: month === 0 ? null : new Date(settlementDate.getTime() + 30 * 24 * 60 * 60 * 1000),
       });
     }
