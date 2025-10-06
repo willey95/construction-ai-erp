@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "rm -rf .next && npm run build"
   publish = ".next"
 
 [[plugins]]
@@ -8,6 +8,9 @@
 [build.environment]
   NODE_VERSION = "20.18.1"
   NPM_FLAGS = "--legacy-peer-deps"
+  NEXT_TELEMETRY_DISABLED = "1"
+  # Force cache invalidation
+  BUILD_ID = "2025-10-06-v2"
 
 # Next.js 페이지 리디렉션
 [[redirects]]
