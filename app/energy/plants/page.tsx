@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { MapPin, Plus, Edit, Trash2, Filter, Search, Zap, Power } from 'lucide-react';
 import { motion } from 'framer-motion';
 import {
@@ -71,18 +71,29 @@ export default function EnergyPlantsPage() {
     }
   };
 
-  const filteredPlants = Array.isArray(plants) ? plants.filter(plant => {
-    const typeMatch = filter.type === 'ALL' || plant.plantType === filter.type;
-    const regionMatch = filter.region === 'ALL' || plant.region === filter.region;
-    const statusMatch = filter.status === 'ALL' || plant.status === filter.status;
-    const searchMatch = searchTerm === '' ||
-      plant.plantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      plant.plantCode.toLowerCase().includes(searchTerm.toLowerCase());
-    return typeMatch && regionMatch && statusMatch && searchMatch;
-  }) : [];
+  const filteredPlants = useMemo(() => {
+    if (!Array.isArray(plants)) return [];
 
-  const uniqueRegions = Array.isArray(plants) ? Array.from(new Set(plants.map(p => p.region))) : [];
-  const uniqueTypes = Array.isArray(plants) ? Array.from(new Set(plants.map(p => p.plantType))) : [];
+    return plants.filter(plant => {
+      const typeMatch = filter.type === 'ALL' || plant.plantType === filter.type;
+      const regionMatch = filter.region === 'ALL' || plant.region === filter.region;
+      const statusMatch = filter.status === 'ALL' || plant.status === filter.status;
+      const searchMatch = searchTerm === '' ||
+        plant.plantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        plant.plantCode.toLowerCase().includes(searchTerm.toLowerCase());
+      return typeMatch && regionMatch && statusMatch && searchMatch;
+    });
+  }, [plants, filter, searchTerm]);
+
+  const uniqueRegions = useMemo(() => {
+    if (!Array.isArray(plants)) return [];
+    return Array.from(new Set(plants.map(p => p.region)));
+  }, [plants]);
+
+  const uniqueTypes = useMemo(() => {
+    if (!Array.isArray(plants)) return [];
+    return Array.from(new Set(plants.map(p => p.plantType)));
+  }, [plants]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -159,7 +170,7 @@ export default function EnergyPlantsPage() {
                   </span>
                 </h1>
                 <ZenBadge variant="info" size="md">
-                  {filteredPlants.length}개 발전소
+                  {Array.isArray(filteredPlants) ? filteredPlants.length : 0}개 발전소
                 </ZenBadge>
               </div>
               <p className="text-sm text-pneuma/60 font-light tracking-wide">
@@ -201,7 +212,7 @@ export default function EnergyPlantsPage() {
                   className="w-full px-3 py-2 bg-phenomenon/30 border border-essence/20 rounded-lg text-sm text-logos"
                 >
                   <option value="ALL">모든 유형</option>
-                  {uniqueTypes.map(type => (
+                  {Array.isArray(uniqueTypes) && uniqueTypes.map(type => (
                     <option key={type} value={type}>{type}</option>
                   ))}
                 </select>
@@ -215,7 +226,7 @@ export default function EnergyPlantsPage() {
                   className="w-full px-3 py-2 bg-phenomenon/30 border border-essence/20 rounded-lg text-sm text-logos"
                 >
                   <option value="ALL">모든 지역</option>
-                  {uniqueRegions.map(region => (
+                  {Array.isArray(uniqueRegions) && uniqueRegions.map(region => (
                     <option key={region} value={region}>{region}</option>
                   ))}
                 </select>
@@ -241,7 +252,7 @@ export default function EnergyPlantsPage() {
 
         {/* Plants Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPlants.map((plant, idx) => (
+          {Array.isArray(filteredPlants) && filteredPlants.map((plant, idx) => (
             <motion.div
               key={plant.id}
               initial={{ opacity: 0, y: 20 }}
@@ -307,7 +318,7 @@ export default function EnergyPlantsPage() {
         </div>
 
         {/* Empty State */}
-        {filteredPlants.length === 0 && (
+        {Array.isArray(filteredPlants) && filteredPlants.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
