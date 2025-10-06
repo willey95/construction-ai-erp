@@ -32,6 +32,7 @@ interface PowerPlant {
 export default function EnergyPlantsPage() {
   const [plants, setPlants] = useState<PowerPlant[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState({
     type: 'ALL',
     region: 'ALL',
@@ -46,18 +47,25 @@ export default function EnergyPlantsPage() {
   const fetchPlants = async () => {
     try {
       const res = await fetch('/api/energy/plants');
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
-        setPlants(data.plants || []);
+        setPlants(Array.isArray(data.plants) ? data.plants : []);
+        setError(null);
+      } else {
+        setError(data.error || 'Failed to fetch plants');
+        setPlants([]);
       }
     } catch (error) {
       console.error('Failed to fetch plants:', error);
+      setError('Network error');
+      setPlants([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const filteredPlants = plants.filter(plant => {
+  const filteredPlants = Array.isArray(plants) ? plants.filter(plant => {
     const typeMatch = filter.type === 'ALL' || plant.plantType === filter.type;
     const regionMatch = filter.region === 'ALL' || plant.region === filter.region;
     const statusMatch = filter.status === 'ALL' || plant.status === filter.status;
@@ -65,7 +73,7 @@ export default function EnergyPlantsPage() {
       plant.plantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       plant.plantCode.toLowerCase().includes(searchTerm.toLowerCase());
     return typeMatch && regionMatch && statusMatch && searchMatch;
-  });
+  }) : [];
 
   const uniqueRegions = Array.from(new Set(plants.map(p => p.region)));
   const uniqueTypes = Array.from(new Set(plants.map(p => p.plantType)));
@@ -98,6 +106,23 @@ export default function EnergyPlantsPage() {
           <ZenSkeleton height="h-32" />
           <div className="grid grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map(i => <ZenSkeleton key={i} height="h-64" />)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-void p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center py-20">
+            <Power className="w-16 h-16 text-danger/40 mx-auto mb-4" />
+            <h3 className="text-lg text-pneuma/60 font-light mb-2">데이터를 불러올 수 없습니다</h3>
+            <p className="text-sm text-nous/40 font-light mb-6">{error}</p>
+            <ZenButton variant="primary" onClick={fetchPlants}>
+              다시 시도
+            </ZenButton>
           </div>
         </div>
       </div>
