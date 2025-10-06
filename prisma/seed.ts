@@ -241,7 +241,7 @@ async function main() {
 
   console.log('✅ 거래처 생성 완료 (20개)');
 
-  // 3. 프로젝트 생성 (40개)
+  // 3. 프로젝트 생성 (43개)
   const projects = [];
 
   const projectData = [
@@ -276,7 +276,7 @@ async function main() {
     { code: 'IN-2023-018', name: '춘천 국도 확장', type: ProjectType.INFRA, client: '한국도로공사', price: 450, contract: '2023-10-01', start: '2023-11-01', end: '2024-10-31', period: 12, status: ProjectStatus.COMPLETED, progress: 100.0 },
     { code: 'IN-2024-014', name: '천안 교량 신설', type: ProjectType.INFRA, client: '한국도로공사', price: 680, contract: '2024-09-01', start: '2024-10-01', end: '2025-09-30', period: 12, status: ProjectStatus.ACTIVE, progress: 45.6 },
 
-    // 에너지 프로젝트 (8개)
+    // 에너지 프로젝트 (11개)
     { code: 'EN-2025-001', name: '세종 스마트시티 전력망', type: ProjectType.ENERGY, client: '한국전력공사', price: 780, contract: '2025-01-05', start: '2025-02-05', end: '2026-02-04', period: 12, status: ProjectStatus.ACTIVE, progress: 22.4 },
     { code: 'EN-2024-008', name: '제주 풍력발전단지', type: ProjectType.ENERGY, client: '한국전력공사', price: 1580, contract: '2024-06-01', start: '2024-07-01', end: '2026-06-30', period: 24, status: ProjectStatus.ACTIVE, progress: 42.8 },
     { code: 'EN-2025-002', name: '울산 태양광 발전소', type: ProjectType.ENERGY, client: '한국전력공사', price: 920, contract: '2025-02-10', start: '2025-03-10', end: '2026-03-09', period: 12, status: ProjectStatus.ACTIVE, progress: 18.3 },
@@ -285,6 +285,9 @@ async function main() {
     { code: 'EN-2024-006', name: '강원 수력발전소', type: ProjectType.ENERGY, client: '한국전력공사', price: 1250, contract: '2024-03-01', start: '2024-04-01', end: '2026-03-31', period: 24, status: ProjectStatus.ACTIVE, progress: 52.3 },
     { code: 'EN-2024-010', name: '충남 태양광단지 2단계', type: ProjectType.ENERGY, client: '한국전력공사', price: 1120, contract: '2024-07-01', start: '2024-08-01', end: '2025-07-31', period: 12, status: ProjectStatus.ACTIVE, progress: 68.5 },
     { code: 'EN-2023-015', name: '전북 풍력발전소', type: ProjectType.ENERGY, client: '한국전력공사', price: 850, contract: '2023-09-01', start: '2023-10-01', end: '2024-09-30', period: 12, status: ProjectStatus.COMPLETED, progress: 100.0 },
+    { code: 'EN-2025-004', name: '당진 LNG 복합화력발전소', type: ProjectType.ENERGY, client: '한국전력공사', price: 3200, contract: '2025-01-20', start: '2025-02-20', end: '2027-02-19', period: 24, status: ProjectStatus.ACTIVE, progress: 15.8 },
+    { code: 'EN-2024-016', name: '삼척 석탄화력발전소 환경개선', type: ProjectType.ENERGY, client: '한국전력공사', price: 1850, contract: '2024-09-01', start: '2024-10-01', end: '2026-09-30', period: 24, status: ProjectStatus.ACTIVE, progress: 28.6 },
+    { code: 'EN-2025-005', name: '영광 원자력발전소 보수공사', type: ProjectType.ENERGY, client: '한국전력공사', price: 2650, contract: '2025-03-10', start: '2025-04-10', end: '2026-10-09', period: 18, status: ProjectStatus.PLANNED, progress: 0.0 },
 
     // 단순도급 프로젝트 (5개)
     { code: 'SC-2025-001', name: '서초 주상복합', type: ProjectType.SIMPLE_CONTRACT, client: '현대건설', price: 850, contract: '2025-02-01', start: '2025-03-01', end: '2026-02-28', period: 12, status: ProjectStatus.ACTIVE, progress: 28.3 },
@@ -334,8 +337,8 @@ async function main() {
     });
   }
 
-  console.log('✅ 프로젝트 생성 완료 (40개)');
-  console.log('✅ 프로젝트 가정 생성 완료 (40개)');
+  console.log('✅ 프로젝트 생성 완료 (43개)');
+  console.log('✅ 프로젝트 가정 생성 완료 (43개)');
 
   // 5. 수주 파이프라인 생성 (15개)
   const pipelineData = [
