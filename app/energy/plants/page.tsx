@@ -49,10 +49,16 @@ export default function EnergyPlantsPage() {
       const res = await fetch('/api/energy/plants');
       const data = await res.json();
 
+      console.log('API Response:', data);
+      console.log('Is plants array?', Array.isArray(data.plants));
+
       if (res.ok) {
-        setPlants(Array.isArray(data.plants) ? data.plants : []);
+        const plantsData = Array.isArray(data.plants) ? data.plants : [];
+        console.log('Setting plants:', plantsData);
+        setPlants(plantsData);
         setError(null);
       } else {
+        console.error('API Error:', data.error);
         setError(data.error || 'Failed to fetch plants');
         setPlants([]);
       }
@@ -75,8 +81,8 @@ export default function EnergyPlantsPage() {
     return typeMatch && regionMatch && statusMatch && searchMatch;
   }) : [];
 
-  const uniqueRegions = Array.from(new Set(plants.map(p => p.region)));
-  const uniqueTypes = Array.from(new Set(plants.map(p => p.plantType)));
+  const uniqueRegions = Array.isArray(plants) ? Array.from(new Set(plants.map(p => p.region))) : [];
+  const uniqueTypes = Array.isArray(plants) ? Array.from(new Set(plants.map(p => p.plantType))) : [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
