@@ -28,6 +28,32 @@ async function resetDatabase() {
     await prisma.user.deleteMany({});
     console.log('  ✓ User 삭제 완료');
 
+    // 에너지 관련 데이터 삭제
+    try {
+      await prisma.energyProduction.deleteMany({});
+      console.log('  ✓ EnergyProduction 삭제 완료');
+    } catch (e) {}
+
+    try {
+      await prisma.energySales.deleteMany({});
+      console.log('  ✓ EnergySales 삭제 완료');
+    } catch (e) {}
+
+    try {
+      await prisma.energySettlement.deleteMany({});
+      console.log('  ✓ EnergySettlement 삭제 완료');
+    } catch (e) {}
+
+    try {
+      await prisma.energyAlert.deleteMany({});
+      console.log('  ✓ EnergyAlert 삭제 완료');
+    } catch (e) {}
+
+    try {
+      await prisma.powerPlant.deleteMany({});
+      console.log('  ✓ PowerPlant 삭제 완료');
+    } catch (e) {}
+
     // ETL 관련 데이터 삭제 (있는 경우)
     try {
       await prisma.eTLJob.deleteMany({});

@@ -376,12 +376,193 @@ async function main() {
 
   console.log('✅ 수주 파이프라인 생성 완료 (15개)');
 
+  // 6. 에너지 발전소 생성 (15개)
+  const plantData = [
+    // 태양광 발전소 (6개)
+    { code: 'SL-001', name: '세종 태양광 1호', type: 'SOLAR', region: '세종', address: '세종시 조치원읍', lat: 36.6024, lon: 127.2821, capacity: 2500, installed: '2022-03-15', status: 'OPERATIONAL', contract: 'SMP', price: 125.5 },
+    { code: 'SL-002', name: '울산 태양광발전소', type: 'SOLAR', region: '울산', address: '울산시 남구', lat: 35.5384, lon: 129.3114, capacity: 1800, installed: '2023-06-20', status: 'OPERATIONAL', contract: 'SMP', price: 120.3 },
+    { code: 'SL-003', name: '나주 태양광단지', type: 'SOLAR', region: '전남', address: '전남 나주시', lat: 35.0160, lon: 126.7109, capacity: 3200, installed: '2021-09-10', status: 'OPERATIONAL', contract: 'REC', price: 150.8 },
+    { code: 'SL-004', name: '영암 태양광', type: 'SOLAR', region: '전남', address: '전남 영암군', lat: 34.8004, lon: 126.6967, capacity: 2100, installed: '2022-11-05', status: 'OPERATIONAL', contract: 'SMP', price: 122.7 },
+    { code: 'SL-005', name: '충남 태양광단지 A', type: 'SOLAR', region: '충남', address: '충남 서산시', lat: 36.7849, lon: 126.4503, capacity: 2800, installed: '2023-02-28', status: 'OPERATIONAL', contract: 'REC', price: 145.2 },
+    { code: 'SL-006', name: '충남 태양광단지 B', type: 'SOLAR', region: '충남', address: '충남 당진시', lat: 36.8931, lon: 126.6478, capacity: 1950, installed: '2024-01-15', status: 'OPERATIONAL', contract: 'SMP', price: 128.4 },
+
+    // 풍력 발전소 (3개)
+    { code: 'WD-001', name: '제주 풍력발전단지', type: 'WIND', region: '제주', address: '제주시 구좌읍', lat: 33.5010, lon: 126.8010, capacity: 4200, installed: '2021-05-12', status: 'OPERATIONAL', contract: 'REC', price: 180.5 },
+    { code: 'WD-002', name: '강원 풍력발전소', type: 'WIND', region: '강원', address: '강원 영월군', lat: 37.1836, lon: 128.4617, capacity: 3600, installed: '2022-08-20', status: 'OPERATIONAL', contract: 'REC', price: 175.3 },
+    { code: 'WD-003', name: '전북 해상풍력', type: 'WIND', region: '전북', address: '전북 군산시', lat: 35.9676, lon: 126.7369, capacity: 5100, installed: '2023-04-10', status: 'OPERATIONAL', contract: 'PPA', price: 190.2 },
+
+    // 수력 발전소 (2개)
+    { code: 'HD-001', name: '강원 수력발전소', type: 'HYDRO', region: '강원', address: '강원 평창군', lat: 37.3704, lon: 128.3900, capacity: 3800, installed: '2020-12-01', status: 'OPERATIONAL', contract: 'SMP', price: 115.8 },
+    { code: 'HD-002', name: '충북 수력발전', type: 'HYDRO', region: '충북', address: '충북 제천시', lat: 37.1326, lon: 128.1911, capacity: 2900, installed: '2021-07-15', status: 'OPERATIONAL', contract: 'SMP', price: 118.5 },
+
+    // ESS (2개)
+    { code: 'ES-001', name: '경기 ESS 1호', type: 'ESS', region: '경기', address: '경기 평택시', lat: 36.9921, lon: 127.1126, capacity: 2400, installed: '2023-03-22', status: 'OPERATIONAL', contract: 'SMP', price: 135.6 },
+    { code: 'ES-002', name: '인천 ESS', type: 'ESS', region: '인천', address: '인천 남동구', lat: 37.4486, lon: 126.7315, capacity: 2050, installed: '2023-09-30', status: 'OPERATIONAL', contract: 'SMP', price: 132.4 },
+
+    // 건설 중 (2개)
+    { code: 'SL-007', name: '경북 태양광단지', type: 'SOLAR', region: '경북', address: '경북 영천시', lat: 35.9730, lon: 128.9386, capacity: 3500, installed: '2025-06-01', status: 'CONSTRUCTION', contract: 'REC', price: 150.0 },
+    { code: 'WD-004', name: '울진 해상풍력', type: 'WIND', region: '경북', address: '경북 울진군', lat: 36.9930, lon: 129.4006, capacity: 6200, installed: '2025-09-15', status: 'CONSTRUCTION', contract: 'PPA', price: 195.0 },
+  ];
+
+  const powerPlants = [];
+  for (const plant of plantData) {
+    const created = await prisma.powerPlant.create({
+      data: {
+        plantCode: plant.code,
+        plantName: plant.name,
+        plantType: plant.type as any,
+        region: plant.region,
+        address: plant.address,
+        latitude: plant.lat,
+        longitude: plant.lon,
+        capacity: plant.capacity,
+        installedDate: new Date(plant.installed),
+        status: plant.status as any,
+        contractType: plant.contract,
+        unitPrice: plant.price,
+      },
+    });
+    powerPlants.push(created);
+  }
+
+  console.log('✅ 발전소 생성 완료 (15개)');
+
+  // 7. 에너지 생산 데이터 (최근 7일간, 운영 중인 발전소만)
+  const operationalPlants = powerPlants.filter(p => p.status === 'OPERATIONAL');
+  const productionRecords = [];
+
+  for (const plant of operationalPlants) {
+    for (let day = 0; day < 7; day++) {
+      const date = new Date();
+      date.setDate(date.getDate() - day);
+
+      // 시간별 데이터 (4시간 간격)
+      for (let hour = 0; hour < 24; hour += 4) {
+        const recordTime = new Date(date);
+        recordTime.setHours(hour, 0, 0, 0);
+
+        // 발전량 계산 (용량 대비 시간대별 변동)
+        let productionFactor = 0.5; // 기본 50%
+        if (plant.plantType === 'SOLAR') {
+          // 태양광: 낮 시간대 높음
+          if (hour >= 8 && hour <= 16) productionFactor = 0.8 + Math.random() * 0.15;
+          else if (hour >= 6 && hour < 8 || hour > 16 && hour <= 18) productionFactor = 0.3 + Math.random() * 0.2;
+          else productionFactor = 0;
+        } else if (plant.plantType === 'WIND') {
+          // 풍력: 변동성 큼
+          productionFactor = 0.3 + Math.random() * 0.6;
+        } else if (plant.plantType === 'HYDRO') {
+          // 수력: 안정적
+          productionFactor = 0.7 + Math.random() * 0.2;
+        } else if (plant.plantType === 'ESS') {
+          // ESS: 피크 시간대 방전
+          if (hour >= 10 && hour <= 20) productionFactor = 0.6 + Math.random() * 0.3;
+          else productionFactor = 0.1 + Math.random() * 0.2;
+        }
+
+        const production = Number(plant.capacity) * productionFactor * 4; // 4시간 생산량
+        const efficiency = productionFactor * 100;
+
+        productionRecords.push({
+          plantId: plant.id,
+          recordedAt: recordTime,
+          production,
+          temperature: 15 + Math.random() * 15, // 15-30°C
+          humidity: 40 + Math.random() * 40, // 40-80%
+          irradiance: plant.plantType === 'SOLAR' ? (hour >= 6 && hour <= 18 ? 200 + Math.random() * 600 : 0) : null,
+          windSpeed: plant.plantType === 'WIND' ? 3 + Math.random() * 12 : null,
+          efficiency,
+        });
+      }
+    }
+  }
+
+  await prisma.energyProduction.createMany({
+    data: productionRecords,
+  });
+
+  console.log(`✅ 에너지 생산 데이터 생성 완료 (${productionRecords.length}개 레코드)`);
+
+  // 8. 에너지 정산 데이터 (최근 6개월)
+  const settlements = [];
+  for (const plant of operationalPlants) {
+    for (let month = 0; month < 6; month++) {
+      const settlementDate = new Date();
+      settlementDate.setMonth(settlementDate.getMonth() - month);
+      settlementDate.setDate(1);
+
+      const monthlyProduction = Number(plant.capacity) * 720 * 0.6; // 30일 * 24시간 * 60% 가동률
+      const smpRevenue = monthlyProduction * 125.5; // SMP 단가
+      const recRevenue = plant.contractType === 'REC' ? monthlyProduction * 85.3 : 0; // REC 단가
+      const incentive = Math.random() * 1000000;
+      const totalRevenue = smpRevenue + recRevenue + incentive;
+
+      const operationCost = Number(plant.capacity) * 2500; // 용량당 운영비
+      const maintenanceCost = Number(plant.capacity) * 1800; // 용량당 유지보수비
+      const totalCost = operationCost + maintenanceCost;
+
+      settlements.push({
+        plantId: plant.id,
+        settlementMonth: settlementDate,
+        smpRevenue,
+        recRevenue,
+        incentive,
+        totalRevenue,
+        operationCost,
+        maintenanceCost,
+        totalCost,
+        netProfit: totalRevenue - totalCost,
+        status: month === 0 ? 'PROCESSING' : 'COMPLETED',
+        settledAt: month === 0 ? null : new Date(settlementDate.getTime() + 30 * 24 * 60 * 60 * 1000),
+      });
+    }
+  }
+
+  await prisma.energySettlement.createMany({
+    data: settlements,
+  });
+
+  console.log(`✅ 에너지 정산 데이터 생성 완료 (${settlements.length}개)`);
+
+  // 9. 에너지 알림 데이터 (샘플)
+  const alerts = [];
+  const alertTypes = ['LOW_PRODUCTION', 'EQUIPMENT_FAILURE', 'WEATHER_RISK', 'MAINTENANCE_DUE', 'PERFORMANCE_DROP'];
+  const severities = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
+
+  for (let i = 0; i < 10; i++) {
+    const plant = operationalPlants[Math.floor(Math.random() * operationalPlants.length)];
+    const alertType = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+    const severity = severities[Math.floor(Math.random() * severities.length)];
+
+    alerts.push({
+      plantId: plant.id,
+      alertType: alertType as any,
+      severity: severity as any,
+      title: `${plant.plantName} - ${alertType}`,
+      message: `발전소에서 ${alertType} 알림이 발생했습니다.`,
+      metrics: { threshold: 80, current: 65 },
+      isResolved: Math.random() > 0.3,
+      resolvedAt: Math.random() > 0.3 ? new Date() : null,
+      resolvedBy: Math.random() > 0.3 ? users[0].id : null,
+    });
+  }
+
+  await prisma.energyAlert.createMany({
+    data: alerts,
+  });
+
+  console.log(`✅ 에너지 알림 데이터 생성 완료 (${alerts.length}개)`);
+
   console.log('\n🎉 시드 데이터 생성 완료!');
   console.log('   - 사용자: 15명');
   console.log('   - 거래처: 20개');
-  console.log('   - 프로젝트: 40개');
-  console.log('   - 프로젝트 가정: 40개');
+  console.log('   - 프로젝트: 43개');
+  console.log('   - 프로젝트 가정: 43개');
   console.log('   - 수주 파이프라인: 15개');
+  console.log('   - 발전소: 15개');
+  console.log(`   - 에너지 생산 데이터: ${productionRecords.length}개`);
+  console.log(`   - 에너지 정산: ${settlements.length}개`);
+  console.log(`   - 에너지 알림: ${alerts.length}개`);
 }
 
 main()
