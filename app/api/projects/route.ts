@@ -30,15 +30,28 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    // Serialize Decimal types to numbers for JSON
-    const serializedProjects = projects.map(project => ({
-      ...project,
-      contractPrice: project.contractPrice ? Number(project.contractPrice) : 0,
-      progressRate: project.progressRate ? Number(project.progressRate) : 0,
-    }));
+    // FIX: More robust serialization to handle nested objects.
+    // This now processes both the main project and its related assumptions.
+    const serializedProjects = projects.map(project => {
+      const assumptions = project.assumptions.map(assumption => {
+        // NOTE: Add any Decimal fields from your ProjectAssumption model here.
+        // For example, if you have a 'cost' field of type Decimal:
+        // return { ...assumption, cost: Number(assumption.cost) };
+        return { ...assumption }; // Return as is if no Decimal types
+      });
+
+      return {
+        ...project,
+        contractPrice: project.contractPrice ? Number(project.contractPrice) : 0,
+        progressRate: project.progressRate ? Number(project.progressRate) : 0,
+        assumptions, // Use the newly serialized assumptions
+      };
+    });
 
     return NextResponse.json(serializedProjects);
   } catch (error) {
+    // NOTE: Check your Netlify Function logs. The full error message from Prisma
+    // will be printed here and will tell you the exact cause of the failure.
     console.error('프로젝트 조회 실패:', error);
     return NextResponse.json({ error: '프로젝트 조회 실패' }, { status: 500 });
   }

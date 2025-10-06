@@ -15,11 +15,22 @@ export default function SimulationPage() {
   }, []);
 
   const fetchProjects = async () => {
-    const res = await fetch('/api/projects');
-    const data = await res.json();
-    setProjects(data);
-    if (data.length > 0) {
-      selectProject(data[0]);
+    try {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+      // Validate that data is an array
+      if (Array.isArray(data)) {
+        setProjects(data);
+        if (data.length > 0) {
+          selectProject(data[0]);
+        }
+      } else {
+        console.error('프로젝트 데이터가 배열이 아닙니다:', data);
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error('프로젝트 조회 실패:', error);
+      setProjects([]);
     }
   };
 

@@ -112,6 +112,13 @@ export const searchAndNavigateToProject = async (projectName: string, view?: 'ov
   try {
     const res = await fetch(`/api/projects`);
     const projects = await res.json();
+
+    // Check if projects is an array before calling .find()
+    if (!Array.isArray(projects)) {
+      console.error('프로젝트 API 응답이 배열이 아닙니다:', projects);
+      return null;
+    }
+
     const matchedProject = projects.find((p: any) =>
       p.projectName.toLowerCase().includes(projectName.toLowerCase())
     );

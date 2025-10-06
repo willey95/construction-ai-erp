@@ -464,3 +464,4 @@ Copyright (c) 2025 Construction AI ERP Team
 ---
 
 **建設 AI ERP** - 존재의 본질을 드러내는 경영정보시스템
+# construction-ai-erp

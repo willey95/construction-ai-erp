@@ -14,9 +14,22 @@ export default function AccountingPage() {
   }, []);
 
   const fetchProjects = async () => {
-    const res = await fetch('/api/projects');
-    const data = await res.json();
-    setProjects(data);
+    try {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+
+      // 중요: 데이터가 배열인지 확인하는 코드 추가
+      if (Array.isArray(data)) {
+        setProjects(data);
+      } else {
+        // 배열이 아닐 경우, 콘솔에 에러를 기록하고 빈 배열로 설정하여 에러 방지
+        console.error("API 응답이 배열이 아닙니다:", data);
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error("프로젝트 데이터를 가져오는 데 실패했습니다:", error);
+      setProjects([]); // 네트워크 에러 등이 발생해도 빈 배열로 설정
+    }
   };
 
   // 모의 분개 데이터

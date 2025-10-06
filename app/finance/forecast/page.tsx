@@ -14,9 +14,20 @@ export default function ForecastPage() {
   }, []);
 
   const fetchProjects = async () => {
-    const res = await fetch('/api/projects');
-    const data = await res.json();
-    setProjects(data);
+    try {
+      const res = await fetch('/api/projects');
+      const data = await res.json();
+      // Validate that data is an array
+      if (Array.isArray(data)) {
+        setProjects(data);
+      } else {
+        console.error('프로젝트 데이터가 배열이 아닙니다:', data);
+        setProjects([]);
+      }
+    } catch (error) {
+      console.error('프로젝트 조회 실패:', error);
+      setProjects([]);
+    }
   };
 
   // 예산 대비 실적 데이터
