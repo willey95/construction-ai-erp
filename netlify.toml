@@ -6,7 +6,7 @@
   package = "@netlify/plugin-nextjs"
 
 [build.environment]
-  NODE_VERSION = "18.17.0"
+  NODE_VERSION = "20.18.1"
   NPM_FLAGS = "--legacy-peer-deps"
 
 # Next.js 페이지 리디렉션
