@@ -48,7 +48,7 @@ export default function EnergyPlantsPage() {
       const res = await fetch('/api/energy/plants');
       if (res.ok) {
         const data = await res.json();
-        setPlants(data);
+        setPlants(data.plants || []);
       }
     } catch (error) {
       console.error('Failed to fetch plants:', error);
